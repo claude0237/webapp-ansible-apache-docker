@@ -1,0 +1,23 @@
+---
+- name: "Apache installation using docker"
+  hosts: prod
+  become: true
+  pre_tasks:
+    - name: download pip script
+      get_url:
+        url: https://bootstrap.pypa.io/pip/get-pip.py 
+        dest: /tmp/get-pip.py 
+
+    - name: install python-pip
+      command: python3 /tmp/get-pip.py
+
+    - name: Install docker python
+      pip: name=docker-py
+
+  tasks:
+    - name: Create Apache container
+      docker_container:
+        name: webapp
+        image: httpd
+        ports:
+          - "90:80"

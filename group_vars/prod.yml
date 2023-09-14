@@ -1,0 +1,4 @@
+ansible_user:  root
+ansible_password: ubuntu
+ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+
