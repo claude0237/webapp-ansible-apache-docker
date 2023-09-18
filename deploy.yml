@@ -3,6 +3,14 @@
   hosts: prod
   become: true
   pre_tasks:
+    - name: installation paquet par boucle
+      package:
+        name: "{{ item }}"
+        state: present
+      when: ansible_distribution == "Ubuntu"
+      loop:
+        - wget
+        - git
     - name: download pip script
       get_url:
         url: https://bootstrap.pypa.io/pip/get-pip.py 
@@ -15,9 +23,15 @@
       pip: name=docker-py
 
   tasks:
+    - name: Copy website file template
+      template:
+        src: index.html.j2
+        dest: /home/ubuntu/index.html
     - name: Create Apache container
       docker_container:
         name: webapp
         image: httpd
         ports:
           - "90:80"
+        volumes:
+          - /home/ubuntu/index.html:/usr/local/apache2/htdocs/index.html
